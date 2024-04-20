@@ -56,15 +56,25 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-    const isbn = req.body.isbn;
-    //const reviews = req.body.reviews;
+    const isbn = req.params.isbn;
+    const reviews = req.query.reviews;
     //const username = req.session.authorization.username;
     //console.log("add review: ", req.params, req.body, req.session);
     if (isbn > 0) {
-        books[isbn] = {
-            "reviews":req.body.reviews
-        }
-        res.status(200).send(books[isbn]);
+        books[isbn].reviews = reviews
+        res.status(200).send(`Review for book with ISBN:${isbn} updated`);
+    }
+    else {
+        return res.status(404).json({message: `ISBN ${isbn} not found`});
+    }
+});
+
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn;
+    console.log(books[isbn].reviews);
+    if(isbn > 0) {
+        books[isbn].reviews = {}
+        res.status(200).send(`Review for book with ISBN:${isbn} deleted`)
     }
     else {
         return res.status(404).json({message: `ISBN ${isbn} not found`});
